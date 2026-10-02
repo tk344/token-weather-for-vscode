@@ -1,6 +1,6 @@
-# claude-mods
+# token-weather for VS Code
 
-Claude Code 用の MOD（関数フック型プラグイン）を置くマーケットプレイスです。
+Claude Code for VS Code で、コンテキストのトークン量を天気アイコンで表示する MOD です。VS Code 拡張機能で動作を確認しています。
 
 ## token-weather
 
@@ -13,7 +13,7 @@ Claude Code 用の MOD（関数フック型プラグイン）を置くマーケ�
 ### インストール
 
 ```
-claude plugin marketplace add tk344/claude-mods
+claude plugin marketplace add tk344/token-weather-for-vscode
 claude plugin install token-weather@takaa-mods
 ```
 
