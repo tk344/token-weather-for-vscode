@@ -1,0 +1,56 @@
+import { atom, read, update } from 'claude-code'
+import type { Register } from 'claude-code'
+
+import type { Weather } from '../types'
+
+const latest = atom({ plugin: 'token-weather', key: 'latest' } as const, null)
+
+const forecast = (percent: number) => {
+  if (percent >= 90) return { icon: '↯', label: 'もうすぐ圧縮', color: 'red' }
+  if (percent >= 75) return { icon: '☇', label: '嵐', color: 'magenta' }
+  if (percent >= 50) return { icon: '☂', label: '雨', color: 'blue' }
+  if (percent >= 25) return { icon: '☁', label: '曇り', color: 'cyan' }
+  return { icon: '☀', label: '快晴', color: 'yellow' }
+}
+
+const refresh = async ($: Parameters<Parameters<Register>[0]>[1] extends never ? never : any) => {
+  const { context } = await $.session.usage()
+  if (context.tokens === undefined || context.percent === undefined) return null
+  const next: Weather = { tokens: context.tokens, window: context.window, percent: context.percent }
+  await update($, latest, () => next)
+  const f = forecast(next.percent)
+  $.ui.status(`${f.icon} ${f.label} ${next.percent}% (${Math.round(next.tokens / 1000)}k/${Math.round(next.window / 1000)}k)`)
+  return next
+}
+
+export const register: Register = on => {
+  on('turn.complete', async ($, e, next) => {
+    const w = await refresh($)
+    const result = await next(e)
+    const k = (n: number) => `${Math.round(n / 1000)}k`
+    const line =
+      w === null
+        ? '☁ token-weather: トークン量を取得できませんでした'
+        : `${forecast(w.percent).icon} ${forecast(w.percent).label} ${w.percent}% (${k(w.tokens)} / ${k(w.window)} tokens)`
+    $.ui.log(line)
+    return { ...result, text: line }
+  })
+
+  on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
+    const w = await read($, latest)
+    if (e.props.hasSurvey || w === null) return next(e)
+
+    const { Box, Text } = $.ui.resolve(e)
+    const f = forecast(w.percent)
+    const k = (n: number) => `${Math.round(n / 1000)}k`
+
+    return (
+      <Box>
+        <Text color={f.color}>
+          {f.icon} {f.label} {w.percent}%
+        </Text>
+        <Text dimColor> ({k(w.tokens)} / {k(w.window)})</Text>
+      </Box>
+    )
+  })
+}

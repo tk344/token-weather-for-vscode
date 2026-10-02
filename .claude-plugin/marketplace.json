@@ -1,0 +1,7 @@
+{
+  "name": "takaa-mods",
+  "owner": { "name": "Takaa" },
+  "plugins": [
+    { "name": "token-weather", "source": "./token-weather", "description": "コンテキスト使用率を天気アイコンでプロンプト上に表示する" }
+  ]
+}
