@@ -1,5 +1,5 @@
 import { atom, read, update } from 'claude-code'
-import type { Register } from 'claude-code'
+import type { EngineInterface, Register } from 'claude-code'
 
 import type { Weather } from '../types'
 
@@ -13,7 +13,9 @@ const forecast = (percent: number) => {
   return { icon: '☀', label: '快晴', color: 'yellow' }
 }
 
-const refresh = async ($: Parameters<Parameters<Register>[0]>[1] extends never ? never : any) => {
+const k = (n: number) => `${Math.round(n / 1000)}k`
+
+const refresh = async ($: EngineInterface): Promise<Weather | null> => {
   const { context } = await $.session.usage()
   if (context.tokens === undefined || context.percent === undefined) return null
   const next: Weather = { tokens: context.tokens, window: context.window, percent: context.percent }
@@ -25,15 +27,15 @@ const refresh = async ($: Parameters<Parameters<Register>[0]>[1] extends never ?
 
 export const register: Register = on => {
   on('turn.complete', async ($, e, next) => {
+    if (e.agentId !== undefined) return next(e)
     const w = await refresh($)
-    const result = await next(e)
-    const k = (n: number) => `${Math.round(n / 1000)}k`
-    const line =
-      w === null
-        ? '☁ token-weather: トークン量を取得できませんでした'
-        : `${forecast(w.percent).icon} ${forecast(w.percent).label} ${w.percent}% (${k(w.tokens)} / ${k(w.window)} tokens)`
-    $.ui.log(line)
-    return { ...result, text: line }
+    const f = w === null ? null : forecast(w.percent)
+    $.ui.log(
+      w === null || f === null
+        ? '☁ トークン量を取得できませんでした'
+        : `${f.icon} ${f.label} ${w.percent}% (${k(w.tokens)} / ${k(w.window)} tokens)`
+    )
+    return next(e)
   })
 
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
@@ -42,7 +44,6 @@ export const register: Register = on => {
 
     const { Box, Text } = $.ui.resolve(e)
     const f = forecast(w.percent)
-    const k = (n: number) => `${Math.round(n / 1000)}k`
 
     return (
       <Box>
