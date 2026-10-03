@@ -1,7 +1,14 @@
 {
   "name": "takaa-mods",
-  "owner": { "name": "tk344" },
+  "owner": {
+    "name": "tk344"
+  },
   "plugins": [
-    { "name": "token-weather", "source": "./token-weather", "description": "各ターンの終わりにコンテキスト使用率を天気アイコンで表示する" }
-  ]
+    {
+      "name": "token-weather",
+      "source": "./token-weather",
+      "description": "各ターンの終わりにコンテキスト使用率を天気アイコンで表示する"
+    }
+  ],
+  "description": "tk344 の Claude Code MOD 集"
 }

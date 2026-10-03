@@ -1,1 +1,1 @@
-{ "name": "token-weather", "version": "0.1.5", "author": { "name": "tk344" }, "description": "各ターンの終わりにコンテキスト使用率を天気アイコンで表示する", "types": "./types/index.d.ts" }
+{ "name": "token-weather", "version": "0.1.6", "author": { "name": "tk344" }, "description": "各ターンの終わりにコンテキスト使用率を天気アイコンで表示する", "types": "./types/index.d.ts" }
