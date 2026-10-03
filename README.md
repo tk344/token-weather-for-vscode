@@ -1,6 +1,6 @@
 # token-weather for VS Code
 
-Claude Code for VS Code で、コンテキストのトークン量を天気アイコンで表示する MOD です。
+Claude Code for VS Code で、コンテキストのトークン量を天気アイコンで表示する MOD です。GitHub で公開しています: https://github.com/tk344/token-weather-for-vscode
 
 返答のたびに、会話の記録へ次のような1行が出ます。
 
