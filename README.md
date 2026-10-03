@@ -59,6 +59,8 @@ claude plugin update token-weather@takaa-mods
 
 - **コードを直したら、`token-weather/.claude-plugin/plugin.json` の `version` を必ず上げてください。** 上げないと、インストール済みのキャッシュが更新されず、修正が反映されません。
 - 検証は、`claude plugin validate token-weather` でできます。
+- 自動の動作確認は `sh scripts/smoke.sh` です。ただし画面に出るかは確かめられないので、更新後にVS Codeを再起動して、会話に1行が出るかを目視してください。
+- VS Code の会話画面は `ui.log` を描画しません。1行を出すには、戻り値の `text` が必要です。
 - 再起動せずに動作を確かめるには、ヘッドレス実行が便利です。`ui_log` と `ui_status` のイベントが出れば、フックは動いています。
 
   ```
