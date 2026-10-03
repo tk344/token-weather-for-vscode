@@ -30,12 +30,14 @@ export const register: Register = on => {
     if (e.agentId !== undefined) return next(e)
     const w = await refresh($)
     const f = w === null ? null : forecast(w.percent)
-    $.ui.log(
+    const line =
       w === null || f === null
         ? '☁ トークン量を取得できませんでした'
         : `${f.icon} ${f.label} ${w.percent}% (${k(w.tokens)} / ${k(w.window)} tokens)`
-    )
-    return next(e)
+    $.ui.log(line)
+    // VS Code の会話画面は ui.log を描画しないため、text でも返す
+    const result = await next(e)
+    return { ...result, text: line }
   })
 
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
